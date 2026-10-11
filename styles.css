@@ -656,3 +656,169 @@ a.card:hover .more::after { transform: translate(3px, -2px); }
   .scroll-progress { display: none; }
 }
 
+
+/* --------------------------------------------------------------------------
+   Scroll-reactive motion graphics
+   Ambient orbital glows, section progress lines and in-view service lighting.
+   -------------------------------------------------------------------------- */
+main, .site-footer { position: relative; z-index: 1; }
+.site-header { z-index: 50; }
+
+.scroll-motion-scene {
+  position: fixed;
+  z-index: 0;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  contain: layout paint;
+}
+.scroll-orb {
+  position: absolute;
+  display: block;
+  width: clamp(180px, 28vw, 390px);
+  aspect-ratio: 1;
+  border: 1px solid rgba(85, 223, 255, 0.13);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 38% 36%, rgba(85, 223, 255, 0.12), rgba(52, 116, 255, 0.045) 36%, transparent 70%);
+  box-shadow: inset 0 0 45px rgba(85, 223, 255, 0.035), 0 0 65px rgba(52, 184, 255, 0.035);
+  will-change: transform;
+}
+.scroll-orb::before,
+.scroll-orb::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.scroll-orb::before {
+  width: 8px;
+  height: 8px;
+  top: 19%;
+  left: 22%;
+  background: #A7F1FF;
+  box-shadow: 0 0 14px 4px rgba(85, 223, 255, 0.28);
+}
+.scroll-orb::after {
+  inset: 13%;
+  border: 1px solid rgba(137, 185, 255, 0.17);
+  border-left-color: rgba(85, 223, 255, 0.46);
+  border-bottom-color: transparent;
+  animation: orb-orbit 28s linear infinite;
+}
+.scroll-orb--one { top: -9vh; right: -9vw; }
+.scroll-orb--two {
+  width: clamp(150px, 21vw, 300px);
+  top: 34vh;
+  left: -12vw;
+  opacity: 0.7;
+  transform: rotate(35deg);
+}
+.scroll-orb--two::after { inset: 20%; animation-duration: 34s; animation-direction: reverse; }
+.scroll-orb--three {
+  width: clamp(200px, 31vw, 440px);
+  bottom: -26vh;
+  right: 17vw;
+  opacity: 0.55;
+}
+.scroll-orb--three::after { inset: 17%; animation-duration: 40s; }
+
+.hero .wrap { position: relative; z-index: 1; }
+.hero::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  top: 9%;
+  right: clamp(-90px, 3vw, 44px);
+  width: clamp(230px, 37vw, 500px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1px solid rgba(85, 223, 255, 0.17);
+  background:
+    radial-gradient(circle at 50% 50%, rgba(52, 184, 255, 0.07), transparent 60%),
+    conic-gradient(from 15deg, transparent 0 22%, rgba(85, 223, 255, 0.22) 25%, transparent 30% 66%, rgba(138, 174, 255, 0.18) 71%, transparent 76%);
+  box-shadow: inset 0 0 45px rgba(85, 223, 255, 0.04), 0 0 80px rgba(52, 184, 255, 0.035);
+  transform: translate3d(0, var(--hero-parallax, 0px), 0) rotate(var(--hero-rotation, 0deg));
+  will-change: transform;
+  pointer-events: none;
+}
+.hero::after {
+  mask-image: radial-gradient(circle, #000 51%, transparent 72%);
+}
+.hero .wrap { padding-block: clamp(64px, 11vw, 140px); }
+
+.section-scroll-track {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  height: 2px;
+  width: 100%;
+  transform: scaleX(0);
+  transform-origin: left center;
+  opacity: 0.15;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, #55DFFF 20%, #88AFFF 65%, #B7F2FF 86%, transparent);
+  box-shadow: 0 0 14px rgba(85, 223, 255, 0.25);
+  will-change: transform;
+}
+.section-scroll-track.is-active { opacity: 0.9; }
+
+.svc {
+  --scroll-focus: 0;
+  transition:
+    transform 280ms var(--ease-out),
+    border-color 240ms ease,
+    box-shadow 280ms ease,
+    background 240ms ease;
+}
+.svc::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  border-radius: inherit;
+  background: linear-gradient(90deg, transparent, #55DFFF 22%, #88AFFF 70%, transparent);
+  transform: scaleX(var(--scroll-focus));
+  transform-origin: left center;
+  opacity: 0.95;
+  pointer-events: none;
+}
+.svc.is-visible {
+  box-shadow:
+    0 18px 46px rgba(0, 0, 0, 0.16),
+    0 0 calc(var(--scroll-focus) * 34px) rgba(52, 184, 255, calc(var(--scroll-focus) * 0.12));
+}
+.svc .included {
+  transition: border-color 240ms ease, background 240ms ease;
+}
+.svc.is-visible .included {
+  border-color: rgba(125, 190, 255, calc(0.16 + var(--scroll-focus) * 0.24));
+}
+
+@keyframes orb-orbit {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 640px) {
+  .scroll-orb--one { right: -34vw; top: 1vh; }
+  .scroll-orb--two { left: -37vw; top: 44vh; }
+  .scroll-orb--three { right: -25vw; bottom: -15vh; }
+  .hero::after {
+    top: 2%;
+    right: -42%;
+    width: 76vw;
+    opacity: 0.65;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scroll-motion-scene,
+  .section-scroll-track,
+  .hero::after { display: none !important; }
+  .svc::after { display: none; }
+  .scroll-orb::after { animation: none !important; }
+}
+

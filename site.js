@@ -102,10 +102,105 @@
     progressPending = true;
     window.requestAnimationFrame(function () {
       updateReadingProgress();
+      updateScrollGraphics();
       progressPending = false;
     });
   }, { passive: true });
   window.addEventListener('resize', updateReadingProgress, { passive: true });
+
+  // Scroll-reactive motion graphics: restrained ambient orbs, section progress
+  // tracks, a hero parallax ring, and subtle in-view lighting on service cards.
+  var motionOrbs = [];
+  var motionHero = document.querySelector('.hero');
+  var motionSections = [];
+  var motionServiceCards = [];
+  var motionScene = null;
+
+  if (!prefersReducedMotion) {
+    motionScene = document.createElement('div');
+    motionScene.className = 'scroll-motion-scene';
+    motionScene.setAttribute('aria-hidden', 'true');
+    motionScene.innerHTML =
+      '<span class="scroll-orb scroll-orb--one"></span>' +
+      '<span class="scroll-orb scroll-orb--two"></span>' +
+      '<span class="scroll-orb scroll-orb--three"></span>';
+    document.body.appendChild(motionScene);
+    motionOrbs = Array.prototype.slice.call(motionScene.querySelectorAll('.scroll-orb'));
+
+    motionSections = Array.prototype.slice.call(document.querySelectorAll(
+      'main .section, main .svc-group, main .page-hero, main .cta-band'
+    ));
+    motionSections.forEach(function (section) {
+      var track = document.createElement('span');
+      track.className = 'section-scroll-track';
+      track.setAttribute('aria-hidden', 'true');
+      section.appendChild(track);
+      section._motionTrack = track;
+    });
+
+    motionServiceCards = Array.prototype.slice.call(document.querySelectorAll('.svc'));
+  }
+
+  function clampMotion(value, min, max) {
+    return Math.min(max, Math.max(min, value));
+  }
+
+  function updateScrollGraphics() {
+    if (prefersReducedMotion) return;
+
+    var y = window.scrollY || window.pageYOffset || 0;
+    var phase = y * 0.001;
+    var transforms = [
+      'translate3d(' + (Math.sin(phase * 1.2) * 22).toFixed(2) + 'px,' +
+        (Math.cos(phase) * 28 - Math.min(55, y * 0.012)).toFixed(2) + 'px,0) rotate(' +
+        clampMotion(y * 0.012, -55, 55).toFixed(2) + 'deg)',
+      'translate3d(' + (Math.cos(phase * 0.9) * -24).toFixed(2) + 'px,' +
+        (Math.sin(phase * 1.4) * 34 + Math.min(35, y * 0.008)).toFixed(2) + 'px,0) rotate(' +
+        clampMotion(35 - y * 0.009, -25, 35).toFixed(2) + 'deg)',
+      'translate3d(' + (Math.sin(phase * 0.75) * 18).toFixed(2) + 'px,' +
+        (Math.cos(phase * 1.15) * 30 - Math.min(45, y * 0.01)).toFixed(2) + 'px,0) rotate(' +
+        clampMotion(y * 0.008, -35, 45).toFixed(2) + 'deg)'
+    ];
+
+    motionOrbs.forEach(function (orb, index) {
+      orb.style.transform = transforms[index];
+    });
+
+    if (motionHero) {
+      motionHero.style.setProperty('--hero-parallax', Math.min(72, y * 0.1).toFixed(2) + 'px');
+      motionHero.style.setProperty('--hero-rotation', (Math.min(36, y * 0.025)).toFixed(2) + 'deg');
+    }
+
+    // Read geometry first, then write styles to avoid unnecessary layout churn.
+    var sectionUpdates = motionSections.map(function (section) {
+      var rect = section.getBoundingClientRect();
+      var progress = clampMotion(
+        (window.innerHeight - rect.top) / (window.innerHeight + rect.height),
+        0, 1
+      );
+      var visible = rect.bottom > 0 && rect.top < window.innerHeight;
+      return { track: section._motionTrack, progress: progress, visible: visible };
+    });
+
+    sectionUpdates.forEach(function (item) {
+      item.track.style.transform = 'scaleX(' + item.progress.toFixed(3) + ')';
+      item.track.classList.toggle('is-active', item.visible);
+    });
+
+    var cardUpdates = motionServiceCards.map(function (card) {
+      var rect = card.getBoundingClientRect();
+      var center = rect.top + rect.height / 2;
+      var distance = Math.abs(center - window.innerHeight * 0.54);
+      var focus = clampMotion(1 - distance / (window.innerHeight * 0.82), 0, 1);
+      return { card: card, focus: focus };
+    });
+
+    cardUpdates.forEach(function (item) {
+      item.card.style.setProperty('--scroll-focus', item.focus.toFixed(3));
+    });
+  }
+
+  updateScrollGraphics();
 
   if (!prefersReducedMotion && 'IntersectionObserver' in window) {
     var revealItems = document.querySelectorAll(
