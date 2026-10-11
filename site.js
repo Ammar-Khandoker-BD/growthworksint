@@ -76,4 +76,59 @@
       });
     }
   });
+
+  // Premium page motion: reveal content as it enters the viewport, without hiding
+  // anything when reduced motion is preferred or IntersectionObserver is unavailable.
+  var prefersReducedMotion = window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Slim reading-progress indicator.
+  var progressBar = document.createElement('div');
+  progressBar.className = 'scroll-progress';
+  progressBar.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(progressBar);
+
+  function updateReadingProgress() {
+    var root = document.documentElement;
+    var scrollable = root.scrollHeight - window.innerHeight;
+    var amount = scrollable > 0 ? window.scrollY / scrollable : 0;
+    progressBar.style.transform = 'scaleX(' + Math.min(1, Math.max(0, amount)) + ')';
+  }
+
+  var progressPending = false;
+  updateReadingProgress();
+  window.addEventListener('scroll', function () {
+    if (progressPending) return;
+    progressPending = true;
+    window.requestAnimationFrame(function () {
+      updateReadingProgress();
+      progressPending = false;
+    });
+  }, { passive: true });
+  window.addEventListener('resize', updateReadingProgress, { passive: true });
+
+  if (!prefersReducedMotion && 'IntersectionObserver' in window) {
+    var revealItems = document.querySelectorAll(
+      '.section-head, .area-row, .card, .svc, .step, .pending, .contact-item, .form, .pledge, .cta-band .stack'
+    );
+
+    revealItems.forEach(function (item, index) {
+      item.classList.add('reveal-item');
+      item.style.setProperty('--reveal-delay', (index % 4) * 65 + 'ms');
+    });
+    document.documentElement.classList.add('has-reveal');
+
+    var revealObserver = new IntersectionObserver(function (entries, observer) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -4% 0px' });
+
+    revealItems.forEach(function (item) {
+      revealObserver.observe(item);
+    });
+  }
+
 })();
