@@ -1874,3 +1874,18 @@ body.gw-motion-ready .gw-motion-item.gw-motion-in {
   .gw-tilt-item, .gw-tilt-item.gw-tilt-active { transform: none !important; transition: none !important; }
   .gw-click-ripple, .brand img { animation: none !important; }
 }
+
+
+/* Final motion interaction polish: reliable ripple positioning + tilt precedence. */
+.chip, .nav a, .svc-nav a {
+  position: relative;
+  overflow: hidden;
+}
+html.has-reveal .gw-tilt-item.gw-tilt-active {
+  transform: perspective(1000px) rotateX(var(--gw-tilt-x, 0deg)) rotateY(var(--gw-tilt-y, 0deg)) translateY(-3px);
+}
+@media (max-width: 640px) {
+  .gw-tilt-item, html.has-reveal .gw-tilt-item.gw-tilt-active {
+    transform: none !important;
+  }
+}
