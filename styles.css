@@ -1889,3 +1889,48 @@ html.has-reveal .gw-tilt-item.gw-tilt-active {
     transform: none !important;
   }
 }
+
+
+/* Sticky header + service category bar alignment fix.
+   Earlier generic positioning accidentally overrode position:sticky on the header,
+   leaving the service bar floating 78px below the viewport and covering headings. */
+.site-header {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 1200 !important;
+}
+main, .site-footer { position: relative; z-index: 1; }
+.svc-nav {
+  position: sticky !important;
+  top: 78px !important;
+  z-index: 1100 !important;
+  margin-top: 0;
+  width: 100%;
+}
+.svc-group { scroll-margin-top: 190px !important; }
+.svc { scroll-margin-top: 190px !important; }
+#quote { scroll-margin-top: 190px !important; }
+
+@media (min-width: 1440px) {
+  .svc-nav { top: 84px !important; }
+  .svc-group, .svc, #quote { scroll-margin-top: 200px !important; }
+}
+@media (min-width: 1920px) {
+  .svc-nav { top: 90px !important; }
+  .svc-group, .svc, #quote { scroll-margin-top: 210px !important; }
+}
+@media (min-width: 3200px) {
+  .svc-nav { top: 104px !important; }
+  .svc-group, .svc, #quote { scroll-margin-top: 230px !important; }
+}
+@media (max-width: 1100px) {
+  .svc-nav { top: 72px !important; }
+  .svc-group, .svc, #quote { scroll-margin-top: 160px !important; }
+}
+@media (max-width: 640px) {
+  .svc-nav {
+    position: static !important;
+    top: auto !important;
+  }
+  .svc-group, .svc, #quote { scroll-margin-top: 90px !important; }
+}
