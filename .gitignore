@@ -21,5 +21,7 @@ Thumbs.db
 .idea/
 node_modules/
 coverage/
+__pycache__/
+*.py[cod]
 dist/
 .cache/
