@@ -12,7 +12,8 @@ The checks documented here cover the current static site source on the `main` br
 - **Mixed content:** no HTTP resource URLs were found in the current HTML attributes.
 - **Forms:** the forms currently build a message in the browser; they do not POST submissions to a site backend. The user still has to choose the WhatsApp action to send the message. There is no backend authentication/database/API in this repository to test.
 - **Browser policy:** added a page-level Content Security Policy (CSP) and `strict-origin-when-cross-origin` referrer policy to each HTML page. The CSP limits JavaScript to same-origin files, prevents plug-in/object loads, limits framing *inside* the page, restricts resource origins and upgrades insecure requests. Inline styles are allowed because the current design uses HTML `style` attributes; inline scripts and `eval` are not allowed.
-- **Regression guard:** `scripts/security_audit.py` is a dependency-free source checker intended to run locally or in GitHub Actions.
+- **Regression guard:** `scripts/security_audit.py` checks page policies, unsafe source patterns, external script usage, new-tab link safety, credential patterns, workflow permissions, immutable action pins, `.gitignore`, and JSON-LD syntax. The GitHub Actions workflow runs on pushes, pull requests, manual dispatch, and weekly; it uses read-only repository permissions, does not persist the checkout token, and validates the Python file before running it.
+- **Dependency update hygiene:** `.github/dependabot.yml` checks GitHub Actions dependencies weekly. `.gitignore` excludes common local environment files, key files, and secret directories. Ignore rules do not remove files already tracked or clean past commit history.
 
 ## Hosting limitations that remain
 
@@ -22,7 +23,7 @@ Recommended manual checks in GitHub:
 
 1. Open **Settings → Pages** and confirm **Enforce HTTPS** is enabled.
 2. Confirm the custom domain is verified and DNS still points to the intended Pages site.
-3. Enable GitHub's secret scanning/push protection and Dependabot alerts where available for the account/repository.
+3. Review the repository's Security tab for secret-scanning alerts. GitHub documents automatic secret scanning for public repositories; push-protection controls and coverage can vary. Dependabot weekly checks for GitHub Actions are configured in this repository, but verify that Dependabot alerts are available/enabled in repository settings.
 4. Consider a trusted reverse proxy/CDN if you need enforced server-side security headers (particularly HSTS and anti-framing headers).
 5. Run a live security-header/TLS test against the deployed domain; these results cannot be inferred from source HTML.
 
