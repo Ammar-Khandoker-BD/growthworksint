@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="3840" height="2160" viewBox="0 0 3840 2160" fill="none">
+  <title>GrowthWorks International — high-resolution abstract glow background</title>
+  <defs>
+    <linearGradient id="base" x1="220" y1="150" x2="3600" y2="2050" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#07143B"/>
+      <stop offset=".48" stop-color="#040A22"/>
+      <stop offset="1" stop-color="#020718"/>
+    </linearGradient>
+    <radialGradient id="blue-halo" cx="0" cy="0" r="1" gradientTransform="matrix(1480 0 0 1120 2870 880)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0A4D91" stop-opacity=".54"/>
+      <stop offset=".46" stop-color="#07336A" stop-opacity=".25"/>
+      <stop offset="1" stop-color="#040A22" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="cyan-core" cx="0" cy="0" r="1" gradientTransform="matrix(540 560 -520 500 2830 890)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#55DFFF" stop-opacity=".22"/>
+      <stop offset=".36" stop-color="#2A85E9" stop-opacity=".09"/>
+      <stop offset="1" stop-color="#1642A8" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="orbit-stroke" x1="2200" y1="300" x2="3390" y2="1770" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#B7F2FF" stop-opacity=".02"/>
+      <stop offset=".28" stop-color="#55DFFF" stop-opacity=".48"/>
+      <stop offset=".64" stop-color="#83ABFF" stop-opacity=".2"/>
+      <stop offset="1" stop-color="#55DFFF" stop-opacity=".03"/>
+    </linearGradient>
+    <linearGradient id="gridfade" x1="0" y1="0" x2="0" y2="2160" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#86DFFF" stop-opacity=".32"/>
+      <stop offset="1" stop-color="#86DFFF" stop-opacity="0"/>
+    </linearGradient>
+    <pattern id="microgrid" width="52" height="52" patternUnits="userSpaceOnUse">
+      <circle cx="1" cy="1" r="1.15" fill="#98DDFE" fill-opacity=".24"/>
+    </pattern>
+    <pattern id="linegrid" width="180" height="180" patternUnits="userSpaceOnUse">
+      <path d="M180 0H0V180" stroke="#4BA6FF" stroke-opacity=".09" stroke-width="1"/>
+    </pattern>
+    <filter id="soft-glow" x="1700" y="-200" width="2200" height="2400" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="54"/>
+    </filter>
+    <mask id="grid-mask">
+      <rect width="3840" height="2160" fill="url(#gridfade)"/>
+    </mask>
+    <mask id="left-fade">
+      <linearGradient id="left-mask" x1="0" y1="0" x2="3000" y2="0" gradientUnits="userSpaceOnUse">
+        <stop stop-color="white" stop-opacity=".05"/>
+        <stop offset=".34" stop-color="white" stop-opacity=".25"/>
+        <stop offset=".67" stop-color="white"/>
+        <stop offset="1" stop-color="white"/>
+      </linearGradient>
+      <rect width="3840" height="2160" fill="url(#left-mask)"/>
+    </mask>
+  </defs>
+  <rect width="3840" height="2160" fill="url(#base)"/>
+  <rect width="3840" height="2160" fill="url(#blue-halo)"/>
+  <rect width="3840" height="2160" fill="url(#cyan-core)"/>
+  <g mask="url(#grid-mask)" opacity=".35">
+    <rect width="3840" height="2160" fill="url(#microgrid)"/>
+    <rect width="3840" height="2160" fill="url(#linegrid)"/>
+  </g>
+  <g opacity=".7">
+    <circle cx="2840" cy="900" r="710" stroke="url(#orbit-stroke)" stroke-width="2"/>
+    <circle cx="2840" cy="900" r="590" stroke="#70DFFF" stroke-opacity=".13" stroke-width="2"/>
+    <circle cx="2840" cy="900" r="470" stroke="#9CBFFF" stroke-opacity=".11" stroke-width="2"/>
+    <circle cx="2840" cy="900" r="350" stroke="#55DFFF" stroke-opacity=".10" stroke-width="2"/>
+    <ellipse cx="2840" cy="900" rx="900" ry="390" transform="rotate(-28 2840 900)" stroke="url(#orbit-stroke)" stroke-width="2"/>
+    <ellipse cx="2840" cy="900" rx="900" ry="390" transform="rotate(38 2840 900)" stroke="#8DB6FF" stroke-opacity=".17" stroke-width="2"/>
+    <ellipse cx="2840" cy="900" rx="740" ry="260" transform="rotate(69 2840 900)" stroke="#55DFFF" stroke-opacity=".12" stroke-width="2"/>
+  </g>
+  <g opacity=".78">
+    <circle cx="2315" cy="555" r="5" fill="#B7F2FF"/>
+    <circle cx="2315" cy="555" r="18" stroke="#55DFFF" stroke-opacity=".45"/>
+    <circle cx="3336" cy="600" r="6" fill="#8DB6FF"/>
+    <circle cx="3336" cy="600" r="19" stroke="#8DB6FF" stroke-opacity=".35"/>
+    <circle cx="3140" cy="1425" r="5" fill="#B7F2FF"/>
+    <circle cx="3140" cy="1425" r="17" stroke="#55DFFF" stroke-opacity=".33"/>
+    <circle cx="2695" cy="1640" r="4" fill="#55DFFF"/>
+  </g>
+  <g opacity=".48">
+    <path d="M2120 390H2460" stroke="#65DFFF" stroke-opacity=".42"/>
+    <path d="M2120 410H2300" stroke="#65DFFF" stroke-opacity=".25"/>
+    <path d="M3190 1720H3530" stroke="#8AB3FF" stroke-opacity=".34"/>
+    <path d="M3370 1740H3530" stroke="#8AB3FF" stroke-opacity=".23"/>
+    <path d="M2470 190H2660" stroke="#65DFFF" stroke-opacity=".25"/>
+  </g>
+  <rect x="0" y="0" width="3840" height="2160" fill="url(#base)" opacity=".17"/>
+  <rect x="0" y="0" width="3840" height="2160" fill="#020718" opacity=".07"/>
+</svg>
