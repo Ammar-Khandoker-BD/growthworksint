@@ -27,6 +27,7 @@ Recommended manual checks in GitHub:
 3. Review the repository's **Security** tab for secret-scanning and CodeQL alerts. GitHub documents automatic secret scanning for public repositories; push-protection controls and alert visibility can vary. Dependabot weekly checks for GitHub Actions are configured in this repository, but verify the status of Dependabot alerts in repository settings.
 4. Consider a trusted reverse proxy/CDN if you need enforced server-side security headers (particularly HSTS and anti-framing headers).
 5. Run a live security-header/TLS test against the deployed domain; these results cannot be inferred from source HTML.
+6. Consider a branch ruleset for `main`: block force pushes/deletion, require pull-request review, and require the Static security audit / CodeQL checks only after both checks have completed successfully at least once. Branch protection is a GitHub repository setting; it has not been enabled by this source-code audit.
 
 ## Limits
 
