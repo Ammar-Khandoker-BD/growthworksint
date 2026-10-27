@@ -1,0 +1,27 @@
+name: Static security audit
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: static-security-audit-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  source-audit:
+    name: Check static site security basics
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Run dependency-free audit
+        run: python3 scripts/security_audit.py
