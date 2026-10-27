@@ -822,3 +822,86 @@ main, .site-footer { position: relative; z-index: 1; }
   .scroll-orb::after { animation: none !important; }
 }
 
+
+
+/* --------------------------------------------------------------------------
+   Premium interaction layer
+   Pointer-following light, tactile controls and a little extra depth.
+   Effects are optional and disabled for reduced-motion preferences.
+   -------------------------------------------------------------------------- */
+
+/* Pointer-following ambient highlight on cards and form panels. */
+.card, .pending, .step, .contact-item, .included, .form {
+  position: relative;
+  isolation: isolate;
+}
+.card::after,
+.pending::after,
+.step::after,
+.contact-item::after,
+.included::after,
+.form::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    360px circle at var(--spot-x, 50%) var(--spot-y, 50%),
+    rgba(85, 223, 255, 0.115),
+    rgba(85, 223, 255, 0.035) 36%,
+    transparent 72%
+  );
+  opacity: 0;
+  transition: opacity 220ms ease;
+  pointer-events: none;
+}
+.has-pointer-spot:hover::after { opacity: 1; }
+
+/* A moving light makes the primary calls-to-action feel more tactile. */
+.btn::before {
+  content: "";
+  position: absolute;
+  inset: -35% auto -35% -70%;
+  width: 42%;
+  transform: skewX(-22deg);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.32), transparent);
+  transition: left 620ms cubic-bezier(.2,.7,.2,1);
+  pointer-events: none;
+}
+.btn:hover::before { left: 140%; }
+.btn:focus-visible { outline-offset: 4px; }
+
+/* The hero's cyan light follows the pointer without shifting page layout. */
+.hero::before {
+  background:
+    radial-gradient(660px circle at var(--hero-spot-x, 70%) var(--hero-spot-y, 45%), rgba(85, 223, 255, 0.105), transparent 64%),
+    linear-gradient(90deg, rgba(4, 10, 34, 0.99) 0%, rgba(4, 10, 34, 0.92) 34%, rgba(4, 10, 34, 0.56) 66%, rgba(4, 10, 34, 0.32) 100%),
+    linear-gradient(0deg, rgba(4, 10, 34, 0.44), transparent 38%);
+}
+
+/* Sharper focus and consistent tap feedback on touch devices. */
+button, .btn, .chip, .svc-nav a {
+  -webkit-tap-highlight-color: transparent;
+}
+button:active, .chip:active, .svc-nav a:active {
+  transform: scale(0.985);
+}
+.nav a, .chip, .svc-nav a, .footer-grid a {
+  transition-timing-function: cubic-bezier(.2,.7,.2,1);
+}
+
+@media (max-width: 640px) {
+  .hero::before {
+    background:
+      radial-gradient(520px circle at var(--hero-spot-x, 74%) var(--hero-spot-y, 20%), rgba(85, 223, 255, 0.09), transparent 66%),
+      linear-gradient(90deg, rgba(4, 10, 34, 0.97), rgba(4, 10, 34, 0.74)),
+      linear-gradient(0deg, rgba(4, 10, 34, 0.42), transparent);
+  }
+  .btn::before { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .btn::before { display: none !important; }
+  .card::after, .pending::after, .step::after, .contact-item::after,
+  .included::after, .form::after { display: none !important; }
+}
