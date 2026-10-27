@@ -16,7 +16,7 @@ The checks documented here cover the current static site source on the `main` br
 
 ## Hosting limitations that remain
 
-This is a GitHub Pages static site. A meta CSP can provide defence in depth, but it **cannot set HTTP response headers** and cannot provide `frame-ancestors` clickjacking protection. Response headers such as `Strict-Transport-Security`, `X-Content-Type-Options`, `X-Frame-Options`, and `Permissions-Policy` must be set by the hosting layer or a reverse proxy/CDN. A repository file such as `_headers` is not a way to configure GitHub Pages response headers.
+This is a GitHub Pages static site. A meta CSP can provide defence in depth, but it **cannot set HTTP response headers** and cannot provide `frame-ancestors` clickjacking protection. Response headers such as `Strict-Transport-Security`, `X-Content-Type-Options`, `X-Frame-Options`, and `Permissions-Policy` must be set by the hosting layer or a reverse proxy/CDN. A repository file such as `_headers` is not a way to configure GitHub Pages response headers. Because this audit could not retrieve the live response headers, it does not conclude that any specific server header is currently missing; check the live response first, then configure missing headers at a hosting layer or reverse proxy/CDN.
 
 Recommended manual checks in GitHub:
 
