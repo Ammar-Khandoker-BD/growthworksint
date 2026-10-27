@@ -1443,3 +1443,171 @@ main:focus { outline: none; }
   body::before, body::after { display: none !important; }
   .back-to-top { transition: none !important; }
 }
+
+
+/* ==========================================================================
+   TRUE 4K / RETINA READY LAYER
+   Uses vector artwork for infinite-scale backgrounds and gives 1440p–4K
+   displays more room without stretching bitmap images or breaking mobile.
+   ========================================================================== */
+
+/* The former 1600px raster glow is replaced with a crisp 3840×2160 SVG scene. */
+.hero {
+  background-image: url("img/glow-4k.svg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center right;
+  background-color: #040A22;
+}
+.cta-band {
+  background-image: url("img/glow-4k.svg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 62% center;
+  background-color: #040A22;
+}
+
+/* Prevent oversized raster assets from being artificially enlarged in content. */
+img {
+  max-width: 100%;
+  height: auto;
+  image-rendering: auto;
+}
+
+/* Widescreen / 1440p layouts */
+@media (min-width: 1440px) {
+  :root {
+    --maxw: 1400px;
+    --gutter: clamp(42px, 3.5vw, 64px);
+  }
+  body { font-size: 18px; }
+  .site-header .wrap { min-height: 84px; }
+  .brand img { width: 46px; height: 46px; }
+  .nav a { font-size: .92rem; padding-inline: 10px; }
+  .hero { min-height: clamp(720px, 68svh, 980px); }
+  .hero-copy { max-width: 820px; gap: 30px; }
+  .hero h1 { font-size: clamp(5.3rem, 5.4vw, 7.2rem); max-width: 10ch; }
+  .hero .lede { font-size: clamp(1.15rem, 1.12vw, 1.34rem); }
+  .section { padding-block: clamp(92px, 7vw, 142px); }
+  .section-head { margin-bottom: clamp(44px, 4vw, 66px); }
+  .grid { gap: clamp(18px, 1.35vw, 28px); }
+  .g2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .g3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .g4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .card { padding: clamp(26px, 2vw, 36px); border-radius: 22px; }
+  .split { gap: clamp(60px, 5vw, 94px); }
+  .cta-band .wrap { padding-block: clamp(82px, 6vw, 124px); }
+}
+
+/* UHD / 4K browser viewport */
+@media (min-width: 1920px) {
+  :root {
+    --maxw: 1680px;
+    --gutter: clamp(68px, 3.5vw, 92px);
+  }
+  body { font-size: 19px; }
+  .site-header .wrap { min-height: 90px; }
+  .brand img { width: 50px; height: 50px; }
+  .brand b { font-size: 1.2rem; }
+  .brand small { font-size: .65rem; }
+  .nav { gap: 5px; }
+  .nav a { font-size: .98rem; padding: 10px 12px; }
+  .hero { min-height: clamp(820px, 67svh, 1120px); }
+  .hero-copy { max-width: 960px; gap: 34px; }
+  .hero h1 { font-size: clamp(6.4rem, 5.1vw, 8.4rem); }
+  .hero .lede { font-size: clamp(1.24rem, 1.05vw, 1.52rem); }
+  .hero-facts { font-size: .9rem; gap: 14px; }
+  .page-hero { padding-block: clamp(88px, 6vw, 132px); }
+  .page-hero h1 { font-size: clamp(4.6rem, 4.2vw, 6.2rem); }
+  .section { padding-block: clamp(120px, 7vw, 168px); }
+  .section-head h2, .split h2 { font-size: clamp(2.8rem, 2.3vw, 3.7rem); }
+  .card, .pending, .step, .contact-item, .included { border-radius: 24px; }
+  .card { padding: clamp(30px, 1.75vw, 40px); }
+  .svc { padding: clamp(34px, 2.1vw, 48px); gap: clamp(42px, 3vw, 64px); }
+  .included { padding: clamp(30px, 1.9vw, 42px); }
+  .form { padding: clamp(32px, 2.3vw, 48px); gap: 24px; }
+  .field input, .field select, .field textarea { min-height: 56px; padding: 15px 17px; }
+  .btn { min-height: 54px; padding: 16px 27px; }
+  .btn-sm { min-height: 46px; padding: 12px 18px; }
+}
+
+/* Large 4K / 5K / ultrawide displays; keep reading width deliberate. */
+@media (min-width: 2400px) {
+  :root {
+    --maxw: 2080px;
+    --gutter: clamp(88px, 3.6vw, 118px);
+  }
+  body { font-size: 21px; }
+  .hero { min-height: clamp(960px, 66svh, 1280px); }
+  .hero h1 { font-size: clamp(7.4rem, 4.35vw, 9.2rem); max-width: 10ch; }
+  .hero-copy { max-width: 1080px; gap: 38px; }
+  .hero .lede { max-width: 62ch; font-size: clamp(1.35rem, .9vw, 1.65rem); }
+  .hero::after { width: clamp(560px, 26vw, 900px); right: 3vw; }
+  .section { padding-block: clamp(150px, 6vw, 200px); }
+  .section-head { max-width: 980px; }
+  .section-head h2, .split h2 { font-size: clamp(3.2rem, 2.15vw, 4.3rem); }
+  .grid { gap: 30px; }
+  .g2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .g3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .g4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .area-row { padding-block: 34px; }
+  .chip { font-size: .95rem; padding: 11px 17px; min-height: 44px; }
+  .cta-band .wrap { padding-block: 150px; }
+  .footer-grid { padding-block: 88px 48px; gap: 70px; }
+}
+
+/* Native 4K CSS-pixel viewports and higher: scale the stage, not just the text. */
+@media (min-width: 3200px) {
+  :root {
+    --maxw: min(2560px, 84vw);
+    --gutter: clamp(120px, 3.5vw, 160px);
+  }
+  body { font-size: 23px; }
+  .site-header .wrap { min-height: 104px; }
+  .brand { gap: 15px; }
+  .brand img { width: 60px; height: 60px; }
+  .brand b { font-size: 1.35rem; }
+  .brand small { font-size: .72rem; }
+  .nav { gap: 8px; }
+  .nav a { font-size: 1.04rem; padding: 12px 16px; }
+  .nav .nav-cta { padding: 15px 22px; }
+  .hero { min-height: clamp(1120px, 65svh, 1480px); }
+  .hero-copy { max-width: 1250px; gap: 44px; }
+  .hero h1 { font-size: clamp(9rem, 4.5vw, 11rem); }
+  .hero .lede { font-size: 1.55rem; max-width: 64ch; }
+  .hero-facts { font-size: 1rem; gap: 18px; }
+  .page-hero { padding-block: 160px; }
+  .page-hero h1 { font-size: clamp(5.4rem, 3.4vw, 7rem); }
+  .section { padding-block: 210px; }
+  .section-head { margin-bottom: 80px; }
+  .section-head h2, .split h2 { font-size: clamp(3.8rem, 2vw, 4.8rem); }
+  .card, .pending, .step, .contact-item, .included { border-radius: 30px; }
+  .card { padding: 44px; gap: 20px; }
+  .svc { padding: 52px; border-radius: 32px; }
+  .form { padding: 54px; gap: 28px; }
+  .field input, .field select, .field textarea { min-height: 62px; font-size: 1rem; }
+  .btn { min-height: 62px; padding: 19px 32px; border-radius: 999px; font-size: 1rem; }
+  .btn-sm { min-height: 50px; padding: 14px 20px; }
+  .wa-float { min-height: 62px; padding: 18px 26px; font-size: 1rem; }
+}
+
+/* Keep high-DPI / retina screens crisp without pixelated bitmap upscaling. */
+@media (min-resolution: 1.5dppx) {
+  .hero, .cta-band {
+    background-image: url("img/glow-4k.svg");
+    background-size: cover;
+  }
+}
+
+/* Mobile override follows the wide-screen rules so phones stay compact. */
+@media (max-width: 1100px) {
+  .hero, .cta-band {
+    background-image: url("img/glow-4k.svg");
+    background-size: cover;
+  }
+  .hero::after { width: clamp(230px, 44vw, 400px); }
+}
+@media (max-width: 640px) {
+  .hero { background-position: 62% center; }
+  .cta-band { background-position: 66% center; }
+}
