@@ -27,5 +27,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
+      - name: Verify audit script syntax
+        run: python3 -m py_compile scripts/security_audit.py
       - name: Run dependency-free audit
         run: python3 scripts/security_audit.py
