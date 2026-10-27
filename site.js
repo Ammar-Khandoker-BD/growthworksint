@@ -1,15 +1,39 @@
 (function () {
   document.documentElement.classList.add('js');
 
-  // mobile menu
+  // Accessible responsive navigation: click, Escape, outside click, resize and link selection.
   var btn = document.querySelector('.menu-btn');
   var nav = document.getElementById('site-nav');
   if (btn && nav) {
-    btn.addEventListener('click', function () {
-      var open = nav.classList.toggle('open');
+    function setMenuOpen(open) {
+      nav.classList.toggle('open', open);
       btn.setAttribute('aria-expanded', open ? 'true' : 'false');
       btn.textContent = open ? 'Close' : 'Menu';
+    }
+
+    btn.addEventListener('click', function () {
+      setMenuOpen(btn.getAttribute('aria-expanded') !== 'true');
     });
+
+    nav.querySelectorAll('a').forEach(function (link) {
+      link.addEventListener('click', function () { setMenuOpen(false); });
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && btn.getAttribute('aria-expanded') === 'true') {
+        setMenuOpen(false);
+        btn.focus();
+      }
+    });
+
+    document.addEventListener('click', function (event) {
+      if (btn.getAttribute('aria-expanded') !== 'true') return;
+      if (!nav.contains(event.target) && !btn.contains(event.target)) setMenuOpen(false);
+    });
+
+    window.addEventListener('resize', function () {
+      if (window.matchMedia('(min-width: 1101px)').matches) setMenuOpen(false);
+    }, { passive: true });
   }
 
   // copy buttons
