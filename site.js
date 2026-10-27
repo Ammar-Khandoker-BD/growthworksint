@@ -128,7 +128,7 @@
     motionOrbs = Array.prototype.slice.call(motionScene.querySelectorAll('.scroll-orb'));
 
     motionSections = Array.prototype.slice.call(document.querySelectorAll(
-      'main .section, main .svc-group, main .page-hero, main .cta-band'
+      'main .section, main .svc-group, main .page-hero, .cta-band'
     ));
     motionSections.forEach(function (section) {
       var track = document.createElement('span');
@@ -224,6 +224,48 @@
     revealItems.forEach(function (item) {
       revealObserver.observe(item);
     });
+  }
+
+  // Pointer-reactive lighting: limited to fine pointers and users who allow motion.
+  // This is visual-only; it does not alter form behavior or navigation.
+  var canUsePointerEffects = !prefersReducedMotion && window.matchMedia &&
+    window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+  if (canUsePointerEffects) {
+    var spotlightSurfaces = document.querySelectorAll(
+      '.card, .pending, .step, .contact-item, .included, .form'
+    );
+    spotlightSurfaces.forEach(function (surface) {
+      surface.addEventListener('pointermove', function (event) {
+        var rect = surface.getBoundingClientRect();
+        if (!rect.width || !rect.height) return;
+        var x = ((event.clientX - rect.left) / rect.width) * 100;
+        var y = ((event.clientY - rect.top) / rect.height) * 100;
+        surface.style.setProperty('--spot-x', clampMotion(x, 0, 100).toFixed(1) + '%');
+        surface.style.setProperty('--spot-y', clampMotion(y, 0, 100).toFixed(1) + '%');
+        surface.classList.add('has-pointer-spot');
+      }, { passive: true });
+
+      surface.addEventListener('pointerleave', function () {
+        surface.classList.remove('has-pointer-spot');
+      }, { passive: true });
+    });
+
+    var pointerHero = document.querySelector('.hero');
+    if (pointerHero) {
+      pointerHero.addEventListener('pointermove', function (event) {
+        var rect = pointerHero.getBoundingClientRect();
+        if (!rect.width || !rect.height) return;
+        var x = ((event.clientX - rect.left) / rect.width) * 100;
+        var y = ((event.clientY - rect.top) / rect.height) * 100;
+        pointerHero.style.setProperty('--hero-spot-x', clampMotion(x, 0, 100).toFixed(1) + '%');
+        pointerHero.style.setProperty('--hero-spot-y', clampMotion(y, 0, 100).toFixed(1) + '%');
+      }, { passive: true });
+      pointerHero.addEventListener('pointerleave', function () {
+        pointerHero.style.removeProperty('--hero-spot-x');
+        pointerHero.style.removeProperty('--hero-spot-y');
+      }, { passive: true });
+    }
   }
 
 })();
