@@ -119,13 +119,4 @@
     }
   }
 
-  // On hybrid laptops, still trigger tap feedback even when the mouse is primary.
-  if (finePointer && coarsePointer && window.PointerEvent) {
-    document.addEventListener('pointerdown', function (event) {
-      if (event.pointerType !== 'touch' && event.pointerType !== 'pen') return;
-      var target = event.target;
-      if (target && target.closest && target.closest('input, textarea, select, option, [contenteditable="true"]')) return;
-      spawnTouchEffect(event.clientX, event.clientY);
-    }, { passive: true });
-  }
 })();
