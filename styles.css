@@ -1283,3 +1283,32 @@ a.card:hover, .pending:hover, .step:hover, .contact-item:hover { transform: tran
     transform: none !important;
   }
 }
+
+
+/* Final responsive polish: preserve the highlighted CTA and numbered process steps. */
+@media (max-width: 1100px) {
+  .js .nav .nav-cta,
+  .js .nav .nav-cta:hover {
+    color: #02112E;
+    background: linear-gradient(110deg, #61DFFF, #B7F2FF);
+    box-shadow: 0 8px 24px rgba(52, 184, 255, .16);
+  }
+}
+.svc-group { position: relative; }
+.steps { counter-reset: s; }
+.step::before {
+  content: "STEP " counter(s, decimal-leading-zero);
+  position: static;
+  display: block;
+  width: fit-content;
+  height: auto;
+  margin-bottom: 2px;
+  padding: 5px 9px;
+  border: 1px solid rgba(97, 223, 255, .23);
+  border-radius: 999px;
+  background: rgba(97, 223, 255, .07);
+  color: var(--glow-soft);
+  font: 500 .68rem var(--mono);
+  letter-spacing: .13em;
+  opacity: 1;
+}
