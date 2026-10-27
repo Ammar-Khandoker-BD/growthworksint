@@ -119,4 +119,97 @@
     }
   }
 
+
+  // Cinematic motion: low-density ambient particles, scroll reveals, gentle
+  // pointer tilt and click ripples. All decoration is non-interactive.
+  var fineMotionPointer = media('(hover: hover) and (pointer: fine)', false);
+
+  if (!reducedMotion) {
+    // A small, deterministic particle field avoids randomness and heavy canvases.
+    var particleField = document.createElement('div');
+    particleField.className = 'gw-particle-field';
+    particleField.setAttribute('aria-hidden', 'true');
+    var particleCount = window.innerWidth <= 640 ? 7 : 18;
+    for (var particleIndex = 0; particleIndex < particleCount; particleIndex++) {
+      var dot = document.createElement('span');
+      dot.className = 'gw-particle-dot';
+      var seed = particleIndex + 1;
+      dot.style.setProperty('--gw-left', ((seed * 37) % 97 + 1) + '%');
+      dot.style.setProperty('--gw-top', ((seed * 53) % 94 + 3) + '%');
+      dot.style.setProperty('--gw-size', (seed % 3 === 0 ? 3.5 : 2) + 'px');
+      dot.style.setProperty('--gw-duration', (7 + (seed % 7)) + 's');
+      dot.style.setProperty('--gw-delay', (-1 * (seed % 9)) + 's');
+      dot.style.setProperty('--gw-dx', (((seed * 11) % 42) - 21) + 'px');
+      dot.style.setProperty('--gw-dy', (-18 - (seed % 32)) + 'px');
+      particleField.appendChild(dot);
+    }
+    document.body.appendChild(particleField);
+
+    // Motion reveal is progressively enabled only after the observer exists;
+    // if unsupported, no element is hidden.
+    if ('IntersectionObserver' in window) {
+      var motionItems = document.querySelectorAll(
+        '.hero-facts span, .chips .chip, .svc dl > div, .included li, .list li, .footer-grid > div'
+      );
+      if (motionItems.length) {
+        document.body.classList.add('gw-motion-ready');
+        var motionObserver = new IntersectionObserver(function (entries, observer) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            entry.target.classList.add('gw-motion-in');
+            observer.unobserve(entry.target);
+          });
+        }, { threshold: 0.12, rootMargin: '0px 0px -24px 0px' });
+
+        motionItems.forEach(function (item, index) {
+          item.classList.add('gw-motion-item');
+          item.style.setProperty('--gw-motion-delay', (index % 5) * 55 + 'ms');
+          motionObserver.observe(item);
+        });
+      }
+    }
+
+    // Very light 3D tilt on large pointer devices only.
+    if (fineMotionPointer) {
+      var tiltItems = document.querySelectorAll('.card, .svc, .pending, .contact-item');
+      tiltItems.forEach(function (item) {
+        item.classList.add('gw-tilt-item');
+        item.addEventListener('pointermove', function (event) {
+          if (event.pointerType && event.pointerType !== 'mouse') return;
+          var rect = item.getBoundingClientRect();
+          if (!rect.width || !rect.height) return;
+          var px = (event.clientX - rect.left) / rect.width;
+          var py = (event.clientY - rect.top) / rect.height;
+          item.style.setProperty('--gw-tilt-y', (clamp(px * 2 - 1, -1, 1) * 2.2).toFixed(2) + 'deg');
+          item.style.setProperty('--gw-tilt-x', (-clamp(py * 2 - 1, -1, 1) * 1.8).toFixed(2) + 'deg');
+          item.classList.add('gw-tilt-active');
+        }, { passive: true });
+        item.addEventListener('pointerleave', function () {
+          item.classList.remove('gw-tilt-active');
+          item.style.setProperty('--gw-tilt-x', '0deg');
+          item.style.setProperty('--gw-tilt-y', '0deg');
+        }, { passive: true });
+      });
+    }
+
+    // Ripple stays clipped inside its control, with a fallback cleanup timer.
+    document.addEventListener('pointerdown', function (event) {
+      var target = event.target && event.target.closest
+        ? event.target.closest('.btn, .chip, .nav a, .svc-nav a, .wa-float, .back-to-top')
+        : null;
+      if (!target || target.classList.contains('gw-click-ripple')) return;
+      var rect = target.getBoundingClientRect();
+      var span = document.createElement('span');
+      span.className = 'gw-click-ripple';
+      span.setAttribute('aria-hidden', 'true');
+      span.style.setProperty('--gw-click-x', (event.clientX - rect.left) + 'px');
+      span.style.setProperty('--gw-click-y', (event.clientY - rect.top) + 'px');
+      span.style.setProperty('--gw-click-size', (Math.max(rect.width, rect.height) * 2.4) + 'px');
+      target.appendChild(span);
+      span.addEventListener('animationend', function () { span.remove(); }, { once: true });
+      window.setTimeout(function () { if (span.isConnected) span.remove(); }, 900);
+    }, { passive: true });
+  }
+
+
 })();
