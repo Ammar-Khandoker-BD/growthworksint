@@ -315,12 +315,15 @@
 
   // Desktop cursor: a restrained luminous follower with larger hover/press states.
   // Touchscreens keep the native interaction model and receive localized ripples.
-  var finePointer = window.matchMedia &&
-    window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-  var coarsePointer = window.matchMedia &&
-    window.matchMedia('(pointer: coarse)').matches;
+  var finePointer = window.matchMedia
+    ? window.matchMedia('(any-hover: hover) and (any-pointer: fine)').matches
+    : true;
+  var coarsePointer = window.matchMedia
+    ? (window.matchMedia('(pointer: coarse)').matches ||
+       window.matchMedia('(any-pointer: coarse)').matches)
+    : ('ontouchstart' in window);
 
-  if (!prefersReducedMotion && finePointer) {
+  if (finePointer) {
     var gwCursor = document.createElement('div');
     gwCursor.className = 'gw-cursor';
     gwCursor.setAttribute('aria-hidden', 'true');
@@ -368,11 +371,25 @@
     window.addEventListener('blur', function () {
       document.body.classList.remove('gw-cursor-enabled', 'gw-cursor-hover', 'gw-cursor-down');
     });
+
+    // Fallback for browsers that expose mouse events but not Pointer Events.
+    if (!window.PointerEvent) {
+      document.addEventListener('mousemove', function (event) {
+        gwPointerX = event.clientX;
+        gwPointerY = event.clientY;
+        document.body.classList.add('gw-cursor-enabled');
+        if (!gwCursorFrame) gwCursorFrame = window.requestAnimationFrame(moveGWCusor);
+        var target = event.target && event.target.closest
+          ? event.target.closest('a, button, [role="button"], .card, .svc, .chip, .svc-nav a, .included, .form, .pending, .contact-item, input, select, textarea')
+          : null;
+        document.body.classList.toggle('gw-cursor-hover', !!target);
+      }, { passive: true });
+    }
   }
 
   // Touch feedback creates a brief ripple and six tiny light particles at the tap.
   // Ignore form controls so text selection, dropdowns and normal input use stay easy.
-  if (!prefersReducedMotion && coarsePointer) {
+  if (coarsePointer) {
     document.addEventListener('pointerdown', function (event) {
       if (event.pointerType !== 'touch') return;
       var target = event.target;
@@ -402,6 +419,25 @@
       });
       ripple.addEventListener('animationend', function () { ripple.remove(); }, { once: true });
     }, { passive: true });
+    // Fallback touchstart listener for older mobile browsers.
+    if (!window.PointerEvent) {
+      document.addEventListener('touchstart', function (event) {
+        var touch = event.changedTouches && event.changedTouches[0];
+        if (!touch) return;
+        var target = event.target;
+        if (target && target.closest && target.closest('input, textarea, select, option')) return;
+        var x = touch.clientX;
+        var y = touch.clientY;
+        var ripple = document.createElement('span');
+        ripple.className = 'gw-touch-ripple';
+        ripple.setAttribute('aria-hidden', 'true');
+        ripple.style.setProperty('--gw-touch-x', x + 'px');
+        ripple.style.setProperty('--gw-touch-y', y + 'px');
+        document.body.appendChild(ripple);
+        ripple.addEventListener('animationend', function () { ripple.remove(); }, { once: true });
+        window.setTimeout(function () { if (ripple.isConnected) ripple.remove(); }, 900);
+      }, { passive: true });
+    }
   }
 
 
