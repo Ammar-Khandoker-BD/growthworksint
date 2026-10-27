@@ -257,7 +257,7 @@
 
   if (canUsePointerEffects) {
     var spotlightSurfaces = document.querySelectorAll(
-      '.card, .pending, .step, .contact-item, .included, .form'
+      '.card, .pending, .step, .svc, .contact-item, .included, .form'
     );
     spotlightSurfaces.forEach(function (surface) {
       surface.addEventListener('pointermove', function (event) {
@@ -291,5 +291,25 @@
       }, { passive: true });
     }
   }
+
+
+  // Back-to-top utility: shown only after the reader has moved down the page.
+  var backToTop = document.createElement('button');
+  backToTop.type = 'button';
+  backToTop.className = 'back-to-top';
+  backToTop.setAttribute('aria-label', 'Back to top');
+  backToTop.setAttribute('title', 'Back to top');
+  backToTop.hidden = true;
+  backToTop.innerHTML = '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 7-7 7 7"/><path d="M12 5v14"/></svg>';
+  document.body.appendChild(backToTop);
+  backToTop.addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+  });
+  function updateBackToTop() {
+    backToTop.hidden = (window.scrollY || window.pageYOffset || 0) < 520;
+  }
+  updateBackToTop();
+  window.addEventListener('scroll', updateBackToTop, { passive: true });
+
 
 })();
