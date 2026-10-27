@@ -22,7 +22,7 @@ PAGES = [
     "humanity-first.html",
 ]
 SCRIPTS = ["site.js", "effects.js"]
-SECURITY_SUPPORT_FILES = [".github/workflows/security-audit.yml", ".github/workflows/codeql.yml", ".github/dependabot.yml", ".gitignore"]
+SECURITY_SUPPORT_FILES = [".github/workflows/security-audit.yml", ".github/workflows/codeql.yml", ".github/dependabot.yml", ".gitignore", "scripts/security_audit.py", "SECURITY.md"]
 failures: list[str] = []
 checks = 0
 
