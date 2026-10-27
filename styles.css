@@ -1611,3 +1611,146 @@ img {
   .hero { background-position: 62% center; }
   .cta-band { background-position: 66% center; }
 }
+
+
+/* ==========================================================================
+   Cursor + touch interaction pack
+   Desktop: subtle luminous follower, context-aware hover and click feedback.
+   Touch: location-aware ripple and tiny particle burst. Reduced-motion safe.
+   ========================================================================== */
+.gw-cursor {
+  position: fixed;
+  z-index: 2000;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate3d(-100px, -100px, 0);
+  transition: opacity 180ms ease;
+  contain: layout style;
+  mix-blend-mode: screen;
+}
+.gw-cursor-ring,
+.gw-cursor-halo,
+.gw-cursor-core {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+.gw-cursor-ring {
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(183, 242, 255, .88);
+  background: rgba(85, 223, 255, .025);
+  box-shadow: 0 0 14px rgba(85, 223, 255, .13), inset 0 0 10px rgba(85, 223, 255, .04);
+  transition: width 180ms cubic-bezier(.2,.7,.2,1), height 180ms cubic-bezier(.2,.7,.2,1), border-color 180ms ease, background 180ms ease;
+}
+.gw-cursor-halo {
+  width: 58px;
+  height: 58px;
+  background: radial-gradient(circle, rgba(85, 223, 255, .16), rgba(85, 223, 255, .045) 42%, transparent 72%);
+  filter: blur(2px);
+  transition: width 220ms ease, height 220ms ease, opacity 180ms ease;
+  opacity: .85;
+}
+.gw-cursor-core {
+  width: 5px;
+  height: 5px;
+  background: #D9FAFF;
+  box-shadow: 0 0 8px 2px rgba(85, 223, 255, .62);
+}
+body.gw-cursor-enabled { cursor: none; }
+body.gw-cursor-enabled a,
+body.gw-cursor-enabled button,
+body.gw-cursor-enabled [role="button"],
+body.gw-cursor-enabled .chip,
+body.gw-cursor-enabled .svc-nav a,
+body.gw-cursor-enabled .wa-float,
+body.gw-cursor-enabled .back-to-top { cursor: none; }
+body.gw-cursor-enabled input,
+body.gw-cursor-enabled textarea,
+body.gw-cursor-enabled select { cursor: auto; }
+body.gw-cursor-enabled .gw-cursor { opacity: 1; }
+body.gw-cursor-hover .gw-cursor-ring {
+  width: 48px;
+  height: 48px;
+  border-color: #C0F4FF;
+  background: rgba(85, 223, 255, .09);
+}
+body.gw-cursor-hover .gw-cursor-halo { width: 78px; height: 78px; opacity: 1; }
+body.gw-cursor-down .gw-cursor-ring {
+  width: 25px;
+  height: 25px;
+  border-color: #fff;
+  background: rgba(85, 223, 255, .19);
+}
+body.gw-cursor-down .gw-cursor-core { transform: translate(-50%, -50%) scale(1.8); }
+
+/* Touch-only expanding ripple; fixed-position so it never changes document layout. */
+.gw-touch-ripple {
+  position: fixed;
+  z-index: 1990;
+  left: var(--gw-touch-x, 50%);
+  top: var(--gw-touch-y, 50%);
+  width: 16px;
+  height: 16px;
+  margin: -8px 0 0 -8px;
+  border: 1px solid rgba(183, 242, 255, .92);
+  border-radius: 50%;
+  pointer-events: none;
+  background: rgba(85, 223, 255, .16);
+  box-shadow: 0 0 18px rgba(85, 223, 255, .22), inset 0 0 12px rgba(85, 223, 255, .1);
+  animation: gw-touch-ripple-expand 620ms cubic-bezier(.12,.64,.2,1) both;
+}
+.gw-touch-ripple::before,
+.gw-touch-ripple::after {
+  content: "";
+  position: absolute;
+  inset: -9px;
+  border: 1px solid rgba(85, 223, 255, .48);
+  border-radius: inherit;
+  animation: gw-touch-ring-fade 620ms ease-out both;
+}
+.gw-touch-ripple::after { inset: -19px; animation-delay: 35ms; }
+.gw-touch-spark {
+  position: fixed;
+  z-index: 1991;
+  left: var(--gw-touch-x, 50%);
+  top: var(--gw-touch-y, 50%);
+  width: 4px;
+  height: 4px;
+  margin: -2px 0 0 -2px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: #D9FAFF;
+  box-shadow: 0 0 8px 2px rgba(85, 223, 255, .7);
+  animation: gw-touch-spark-pop 560ms cubic-bezier(.16,.72,.25,1) both;
+  transform: translate(var(--gw-spark-x, 0), var(--gw-spark-y, 0)) scale(0);
+}
+@keyframes gw-touch-ripple-expand {
+  0% { opacity: .9; transform: scale(.3); }
+  65% { opacity: .52; }
+  100% { opacity: 0; transform: scale(5.2); }
+}
+@keyframes gw-touch-ring-fade {
+  0% { opacity: .7; transform: scale(.5); }
+  100% { opacity: 0; transform: scale(1.65); }
+}
+@keyframes gw-touch-spark-pop {
+  0% { opacity: 0; transform: translate(0,0) scale(.3); }
+  18% { opacity: 1; }
+  100% { opacity: 0; transform: translate(var(--gw-spark-x, 0), var(--gw-spark-y, 0)) scale(1); }
+}
+@media (hover: none), (pointer: coarse) {
+  .gw-cursor { display: none !important; }
+  body, body * { -webkit-tap-highlight-color: transparent; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gw-cursor, .gw-touch-ripple, .gw-touch-spark { display: none !important; animation: none !important; }
+}
