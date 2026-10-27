@@ -1747,10 +1747,32 @@ body.gw-cursor-down .gw-cursor-core { transform: translate(-50%, -50%) scale(1.8
   18% { opacity: 1; }
   100% { opacity: 0; transform: translate(var(--gw-spark-x, 0), var(--gw-spark-y, 0)) scale(1); }
 }
-@media (hover: none), (pointer: coarse) {
+@media (hover: none) and (pointer: coarse) {
   .gw-cursor { display: none !important; }
   body, body * { -webkit-tap-highlight-color: transparent; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .gw-cursor, .gw-touch-ripple, .gw-touch-spark { display: none !important; animation: none !important; }
+  /* Keep cursor and touch feedback usable; only remove decorative movement. */
+  .gw-cursor-halo { display: none !important; }
+  .gw-cursor-ring, .gw-cursor-core { transition: none !important; }
+  .gw-touch-ripple, .gw-touch-spark { animation-duration: .18s !important; }
+}
+
+
+/* Cursor/touch reliability patch: support hybrid devices and reduced-motion users. */
+.gw-cursor { will-change: transform; }
+.gw-cursor-enabled, .gw-cursor-enabled * { cursor: none !important; }
+.gw-cursor-enabled input,
+.gw-cursor-enabled textarea,
+.gw-cursor-enabled select,
+.gw-cursor-enabled [contenteditable="true"] { cursor: text !important; }
+.gw-cursor-enabled button,
+.gw-cursor-enabled a,
+.gw-cursor-enabled [role="button"] { cursor: none !important; }
+.gw-touch-ripple, .gw-touch-spark { will-change: transform, opacity; }
+button:active, a:active, .chip:active, .svc-nav a:active {
+  -webkit-tap-highlight-color: transparent;
+}
+@media (hover: none) and (pointer: coarse) {
+  .gw-cursor { display: none !important; }
 }
