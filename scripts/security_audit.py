@@ -22,7 +22,7 @@ PAGES = [
     "humanity-first.html",
 ]
 SCRIPTS = ["site.js", "effects.js"]
-SECURITY_SUPPORT_FILES = [".github/workflows/security-audit.yml", ".github/dependabot.yml", ".gitignore"]
+SECURITY_SUPPORT_FILES = [".github/workflows/security-audit.yml", ".github/workflows/codeql.yml", ".github/dependabot.yml", ".gitignore"]
 failures: list[str] = []
 checks = 0
 
@@ -132,11 +132,23 @@ for path in PAGES:
 
 # Keep the CI security guard itself least-privilege and pinned to immutable actions.
 workflow = all_sources[".github/workflows/security-audit.yml"]
+codeql_workflow = all_sources[".github/workflows/codeql.yml"]
 dependabot = all_sources[".github/dependabot.yml"]
 gitignore = all_sources[".gitignore"]
 
 check(bool(re.search(r"(?m)^permissions:[ \t]*\n[ \t]+contents:[ \t]*read[ \t]*$", workflow)),
       "security workflow must use read-only contents permission")
+check("persist-credentials: false" in codeql_workflow,
+      "CodeQL workflow checkout must not persist the GitHub token")
+check("security-events: write" in codeql_workflow and "contents: read" in codeql_workflow,
+      "CodeQL workflow must use only the read permissions it needs plus SARIF upload permission")
+check("pull_request_target" not in codeql_workflow and "workflow_run" not in codeql_workflow,
+      "CodeQL workflow must not use privileged pull_request_target/workflow_run triggers")
+check("languages: javascript-typescript" in codeql_workflow and "queries: security-extended" in codeql_workflow,
+      "CodeQL workflow must analyze JavaScript with the security-extended query suite")
+for action_ref in re.findall(r"(?m)^[ \t]+uses:[ \t]+[^\s@]+@([^\s]+)[ \t]*$", codeql_workflow):
+    check(bool(re.fullmatch(r"[0-9a-f]{40}", action_ref)),
+          f"CodeQL action must be pinned to a full commit SHA, not {action_ref}")
 check("persist-credentials: false" in workflow,
       "security workflow checkout must not persist the GitHub token")
 check("pull_request_target" not in workflow and "workflow_run" not in workflow,
