@@ -135,7 +135,7 @@ workflow = all_sources[".github/workflows/security-audit.yml"]
 dependabot = all_sources[".github/dependabot.yml"]
 gitignore = all_sources[".gitignore"]
 
-check(bool(re.search(r"(?m)^permissions:\\s*\\n\\s+contents:\\s*read\\s*$", workflow)),
+check(bool(re.search(r"(?m)^permissions:[ \t]*\n[ \t]+contents:[ \t]*read[ \t]*$", workflow)),
       "security workflow must use read-only contents permission")
 check("persist-credentials: false" in workflow,
       "security workflow checkout must not persist the GitHub token")
@@ -143,7 +143,7 @@ check("pull_request_target" not in workflow and "workflow_run" not in workflow,
       "security workflow must not use privileged pull_request_target/workflow_run triggers")
 check("schedule:" in workflow and "workflow_dispatch:" in workflow,
       "security workflow must support scheduled and manual runs")
-for action_ref in re.findall(r"(?m)^\\s+uses:\\s+[^\\s@]+@([^\\s]+)\\s*$", workflow):
+for action_ref in re.findall(r"(?m)^[ \t]+uses:[ \t]+[^\s@]+@([^\s]+)[ \t]*$", workflow):
     check(bool(re.fullmatch(r"[0-9a-f]{40}", action_ref)),
           f"workflow action must be pinned to a full commit SHA, not {action_ref}")
 
